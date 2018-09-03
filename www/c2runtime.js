@@ -19816,131 +19816,6 @@ cr.plugins_.Browser = function(runtime)
 }());
 ;
 ;
-cr.plugins_.CordovaAdmobFree = function(runtime)
-{
-	this.runtime = runtime;
-};
-(function ()
-{
-	var pluginProto = cr.plugins_.CordovaAdmobFree.prototype;
-	pluginProto.Type = function(plugin)
-	{
-		this.plugin = plugin;
-		this.runtime = plugin.runtime;
-	};
-	var typeProto = pluginProto.Type.prototype;
-	var bannerId="";
-	var interId="";
-	var test;
-	var self;
-	typeProto.onCreate = function()
-	{
-	};
-	pluginProto.Instance = function(type)
-	{
-		this.type = type;
-		this.runtime = type.runtime;
-	};
-	var instanceProto = pluginProto.Instance.prototype;
-	instanceProto.onCreate = function()
-	{
-	self = this;
-	test = false;
-	if (this.properties[2]=='true') {test=true;}
-	bannerId=this.properties[0];
-	interId=this.properties[1];
-	if (typeof window['plugins'] == 'undefined') {return;}else{
-		window['plugins']['AdMob'].setOptions({publisherId: bannerId, interstitialAdId: interId, isTesting: test});
-	}
-	document.addEventListener('onDismissAd', function () {
-			self.runtime.trigger(cr.plugins_.CordovaAdmobFree.prototype.cnds.onBannerAdDismissed, self);
-		});
-	document.addEventListener('onDismissInterstitialAd', function () {
-			self.runtime.trigger(cr.plugins_.CordovaAdmobFree.prototype.cnds.onInterstitialAdDismissed, self);
-		});
-	document.addEventListener('onFailedToReceiveAd', function () {
-			self.runtime.trigger(cr.plugins_.CordovaAdmobFree.prototype.cnds.onFailedAd, self);
-		});
-	};
-	function indexToBoolean(index){
-		switch (index) {
-		case 0:		return true;
-		case 1:		return false;
-		}
-	}
-	function triggerEventBanner(){
-		self.runtime.trigger(cr.plugins_.CordovaAdmobFree.prototype.cnds.onBannerAdpreloaded, self);
-	}
-	function triggerEventInter(){
-		self.runtime.trigger(cr.plugins_.CordovaAdmobFree.prototype.cnds.onInterstitialAdPreloaded, self);
-	}
-	function Cnds() {};
-	Cnds.prototype.onBannerAdDismissed = function ()
-	{
-		return true;
-	};
-	Cnds.prototype.onBannerAdpreloaded = function ()
-	{
-		return true;
-	};
-	Cnds.prototype.onInterstitialAdPreloaded = function ()
-	{
-		return true;
-	};
-	Cnds.prototype.onInterstitialAdDismissed = function ()
-	{
-		return true;
-	};
-	Cnds.prototype.onFailedAd = function ()
-	{
-		return true;
-	};
-	pluginProto.cnds = new Cnds();
-	function Acts() {};
-	Acts.prototype.removeBanner = function ()
-	{
-		if (typeof window['plugins'] == 'undefined') {return;}else{
-		window['plugins']['AdMob'].destroyBannerView();}
-	}
-	Acts.prototype.loadBanner = function (pos, overlp)
-	{
-		if (typeof window['plugins'] == 'undefined') {return;}else{
-		window['plugins']['AdMob'].createBannerView({bannerAtTop: indexToBoolean(pos), overlap: indexToBoolean(overlp)});
-		document.addEventListener('onReceiveAd', triggerEventBanner);
-		} // adSize: adSize,
-	}
-	Acts.prototype.showBanner = function ()
-	{
-		if (typeof window['plugins'] == 'undefined') {return;}else{
-		window['plugins']['AdMob'].createBannerView();
-		document.removeEventListener('onReceiveAd', triggerEventBanner);
-		}
-	}
-	Acts.prototype.loadAndShowInterstitial = function (overlp)
-	{
-		if (typeof window['plugins'] == 'undefined') {return;}else{
-		window['plugins']['AdMob'].prepareInterstitial({adId: interId, overlap: indexToBoolean(overlp), autoShow: true});}
-	}
-	Acts.prototype.loadInterstitial = function (overlp)
-	{
-		if (typeof window['plugins'] == 'undefined') {return;}else{
-		window['plugins']['AdMob'].createInterstitialView({adId: interId, overlap: indexToBoolean(overlp), autoShow: false});
-		document.addEventListener('onReceiveInterstitialAd', triggerEventInter);
-		}
-	}
-	Acts.prototype.showInterstitial = function ()
-	{
-		if (typeof window['plugins'] == 'undefined') {return;}else{
-		window['plugins']['AdMob'].showInterstitialAd();
-		document.removeEventListener('onReceiveInterstitialAd', triggerEventInter);
-		}
-	}
-	pluginProto.acts = new Acts();
-	function Exps() {};
-	pluginProto.exps = new Exps();
-}());
-;
-;
 cr.plugins_.Function = function(runtime)
 {
 	this.runtime = runtime;
@@ -24442,7 +24317,6 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.Arr,
 	cr.plugins_.Audio,
 	cr.plugins_.Browser,
-	cr.plugins_.CordovaAdmobFree,
 	cr.plugins_.Function,
 	cr.plugins_.SpriteFontPlus,
 	cr.plugins_.Sprite,
@@ -24485,7 +24359,6 @@ cr.getObjectRefTable = function () { return [
 	cr.system_object.prototype.acts.RestartLayout,
 	cr.plugins_.Audio.prototype.cnds.IsTagPlaying,
 	cr.plugins_.Audio.prototype.acts.Stop,
-	cr.plugins_.CordovaAdmobFree.prototype.acts.loadAndShowInterstitial,
 	cr.plugins_.TiledBg.prototype.acts.MoveToTop,
 	cr.plugins_.TiledBg.prototype.acts.SetPos,
 	cr.plugins_.Arr.prototype.cnds.CompareX,
