@@ -3736,7 +3736,7 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 					"failIfMajorPerformanceCaveat": true
 				};
 				this.gl = (this.canvas.getContext("webgl1", attribs) ||
-						  
+						   
 						   this.canvas.getContext("experimental-webgl", attribs));
 			}
 		}
@@ -24658,11 +24658,11 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.Browser,
 	cr.plugins_.cranberrygame_CordovaAdmob,
 	cr.plugins_.Function,
-	cr.plugins_.SpriteFontPlus,
 	cr.plugins_.TiledBg,
-	cr.plugins_.Sprite,
-	cr.plugins_.WebStorage,
+	cr.plugins_.SpriteFontPlus,
 	cr.plugins_.Touch,
+	cr.plugins_.WebStorage,
+	cr.plugins_.Sprite,
 	cr.behaviors.Pin,
 	cr.behaviors.Sin,
 	cr.behaviors.Fade,
@@ -24700,7 +24700,6 @@ cr.getObjectRefTable = function () { return [
 	cr.system_object.prototype.acts.RestartLayout,
 	cr.plugins_.Audio.prototype.cnds.IsTagPlaying,
 	cr.plugins_.Audio.prototype.acts.Stop,
-	cr.plugins_.cranberrygame_CordovaAdmob.prototype.acts.ShowInterstitialAd,
 	cr.plugins_.cranberrygame_CordovaAdmob.prototype.acts.ShowBannerAd,
 	cr.plugins_.TiledBg.prototype.acts.MoveToTop,
 	cr.plugins_.TiledBg.prototype.acts.SetPos,
