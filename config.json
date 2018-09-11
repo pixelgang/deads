@@ -1,6 +1,6 @@
 ﻿{
 	"id": "com.digitalharm.deads",
-	"version": "2.1",
+	"version": "3.0",
 	"name": "Dead Squeeze",
 	"description": "Kill the zombies",
 	"author": "UnUrbantech",
@@ -22,7 +22,8 @@
 	}],
 	"plugins": [
 		{ "id": "cordova-plugin-inappbrowser", "version": null },
-		{ "id": "cordova-plugin-whitelist", "version": null }
+		{ "id": "cordova-plugin-whitelist", "version": null },
+		{ "id": "https://github.com/cranberrygame/cordova-plugin-ad-admob", "version": null }
 	],
 	"android": {
 		"min": 23,
