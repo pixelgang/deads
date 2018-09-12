@@ -1,6 +1,6 @@
 ﻿{
 	"id": "com.digitalharm.deads",
-	"version": "4.0",
+	"version": "4.5",
 	"name": "Dead Squeeze",
 	"description": "Kill the zombies",
 	"author": "UnUrbantech",
@@ -21,16 +21,19 @@
 		"density": "xhdpi"
 	}],
 	"plugins": [
+		{ "id": "cordova-plugin-file", "version": null },
 		{ "id": "cordova-plugin-inappbrowser", "version": null },
-		{ "id": "cordova-plugin-whitelist", "version": null }
+		{ "id": "cordova-plugin-whitelist", "version": null },
+		{ "id": "cordova-plugin-wkwebview-engine", "version": null },
+		{ "id": "https://github.com/cranberrygame/cordova-plugin-ad-admob", "version": null }
 	],
 	"android": {
-		"min": 23,
-		"target": 26,
+		"min": 27,
+		"target": 27,
 		"plugins": []
 	},
 	"ios": {
-		"target": "9.0",
+		"target": "10.0",
 		"plugins": []
 	}
 }

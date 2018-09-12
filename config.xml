@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<widget id="com.digitalharm.deads" version="4.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android = "http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.digitalharm.deads" version="4.5" xmlns="http://www.w3.org/ns/widgets" xmlns:android = "http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
 	<name>Dead Squeeze</name>
 	<description>Kill the zombies</description>
 	<author href="http://unurbantech.org" email="support@unurbantech.org">UnUrbantech</author>
@@ -7,19 +7,22 @@
 	<icon src="www/icon-256.png" width="256" height="256" density="xxxhdpi" />
 	<icon src="www/icon-128.png" width="128" height="128" density="xhdpi" />
 
-	<preference name="android-targetSdkVersion" value="26" />
+	<preference name="android-targetSdkVersion" value="27" />
 
 	<preference name="orientation" value="portrait" />
 	<preference name="fullscreen" value="false" />
 	<preference name="DisallowOverscroll" value="true" />
 	<preference name="AllowInlineMediaPlayback" value="true" />
 
-	<preference name="deployment-target" value="9.0" />
-	<preference name="android-minSdkVersion" value="23" />
+	<preference name="deployment-target" value="10.0" />
+	<preference name="android-minSdkVersion" value="27" />
 	<access origin="*" />
 
+	<plugin name="cordova-plugin-file" />
 	<plugin name="cordova-plugin-inappbrowser" />
 	<plugin name="cordova-plugin-whitelist" />
+	<plugin name="cordova-plugin-wkwebview-engine" />
+	<plugin name="https://github.com/cranberrygame/cordova-plugin-ad-admob" />
 
 
 	<engine name="ios" />
