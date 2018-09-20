@@ -21360,6 +21360,7 @@ cr.plugins_.SpriteFontPlus = function(runtime)
 		this.textHeight = 0;
 		this.charWidthJSON	  = this.properties[12];
 		this.spaceWidth 	  = this.properties[13];
+		console.log(this.charWidthJSON);
 		jText = this.charWidthJSON;
 		if (this.recycled)
 		{
@@ -23648,84 +23649,27 @@ cr.plugins_.WebStorage = function(runtime)
 	};
 	pluginProto.exps = new Exps();
 }());
-;
-;
-/*
-cr.plugins_.cranberrygame_CordovaAdmob = function(runtime)
-{
-	this.runtime = runtime;
-	Type
-		onCreate
-	Instance
-		onCreate
-		draw
-		drawGL
-	cnds
-	acts
-	exps
-};
+/* Copyright (c) 2014 Intel Corporation. All rights reserved.
+* Use of this source code is governed by a MIT-style license that can be
+* found in the LICENSE file.
 */
-cr.plugins_.cranberrygame_CordovaAdmob = function(runtime)
+;
+;
+cr.plugins_.admob = function(runtime)
 {
 	this.runtime = runtime;
 };
 (function ()
 {
-	var pluginProto = cr.plugins_.cranberrygame_CordovaAdmob.prototype;
+	var pluginProto = cr.plugins_.admob.prototype;
 	pluginProto.Type = function(plugin)
 	{
 		this.plugin = plugin;
 		this.runtime = plugin.runtime;
 	};
 	var typeProto = pluginProto.Type.prototype;
-/*
-	var fbAppID = "";
-	var fbAppSecret = "";
-*/
-	var bannerAdUnit = "";
-	var interstitialAdUnit = "";
-	var isOverlap = true;
-	var isTest = true;
-	var email = "";
-	var licenseKey = "";
 	typeProto.onCreate = function()
 	{
-/*
-		var newScriptTag=document.createElement('script');
-		newScriptTag.setAttribute("type","text/javascript");
-		newScriptTag.setAttribute("src", "mylib.js");
-		document.getElementsByTagName("head")[0].appendChild(newScriptTag);
-		var scripts=document.getElementsByTagName("script");
-		var scriptExist=false;
-		for(var i=0;i<scripts.length;i++){
-			if(scripts[i].src.indexOf("cordova.js")!=-1||scripts[i].src.indexOf("phonegap.js")!=-1){
-				scriptExist=true;
-				break;
-			}
-		}
-		if(!scriptExist){
-			var newScriptTag=document.createElement("script");
-			newScriptTag.setAttribute("type","text/javascript");
-			newScriptTag.setAttribute("src", "cordova.js");
-			document.getElementsByTagName("head")[0].appendChild(newScriptTag);
-		}
-*/
-		if(this.runtime.isBlackberry10 || this.runtime.isWindows8App || this.runtime.isWindowsPhone8 || this.runtime.isWindowsPhone81){
-			var scripts=document.getElementsByTagName("script");
-			var scriptExist=false;
-			for(var i=0;i<scripts.length;i++){
-				if(scripts[i].src.indexOf("cordova.js")!=-1||scripts[i].src.indexOf("phonegap.js")!=-1){
-					scriptExist=true;
-					break;
-				}
-			}
-			if(!scriptExist){
-				var newScriptTag=document.createElement("script");
-				newScriptTag.setAttribute("type","text/javascript");
-				newScriptTag.setAttribute("src", "cordova.js");
-				document.getElementsByTagName("head")[0].appendChild(newScriptTag);
-			}
-		}
 	};
 	pluginProto.Instance = function(type)
 	{
@@ -23733,258 +23677,201 @@ cr.plugins_.cranberrygame_CordovaAdmob = function(runtime)
 		this.runtime = type.runtime;
 	};
 	var instanceProto = pluginProto.Instance.prototype;
+	var isSupported = false;
 	instanceProto.onCreate = function()
 	{
-/*
-		var self=this;
-		window.addEventListener("resize", function () {//cranberrygame
-			self.runtime.trigger(cr.plugins_.cranberrygame_CordovaAdmob.prototype.cnds.TriggerCondition, self);
-		});
-*/
-		if (!(this.runtime.isAndroid || this.runtime.isiOS || this.runtime.isWindowsPhone8 || this.runtime.isWindowsPhone81))
+		if (!window["admob"])
+		{
+			cr.logexport("[Construct 2] com.cranberrygame.phonegap.plugin.ad.admob plugin is required to show Admob ads with Cordova; other platforms are not supported");
 			return;
-		if (this.runtime.isAndroid){
-			bannerAdUnit = this.properties[0];
-			interstitialAdUnit = this.properties[1];
 		}
-		else if (this.runtime.isiOS){
-			bannerAdUnit = this.properties[2];
-			interstitialAdUnit = this.properties[3];
+		isSupported = true;
+		this.AdMob = window["admob"];
+		if (this.AdMob["setLicenseKey"])
+			this.AdMob["setLicenseKey"]("support@scirra.com", "2ba99d4ff8c219cf7331c88fb3344f80");
+		var overlap = (this.properties[0] !== 0);
+		var isTesting = (this.properties[1] !== 0);
+		this.androidBannerId = this.properties[2];
+		this.androidInterstitialId = this.properties[3];
+		this.iosBannerId = this.properties[4];
+		this.iosInterstitialId = this.properties[5];
+		this.wp8BannerId = this.properties[6];
+		this.wp8InterstitialId = this.properties[7];
+		if (this.runtime.isAndroid)
+		{
+			this.bannerId = this.androidBannerId;
+			this.interstitialId = this.androidInterstitialId;
 		}
-		else if (this.runtime.isWindowsPhone8 || this.runtime.isWindowsPhone81){
-			bannerAdUnit = this.properties[4];
-			interstitialAdUnit = this.properties[5];
+		else if (this.runtime.isiOS)
+		{
+			this.bannerId = this.iosBannerId;
+			this.interstitialId = this.iosInterstitialId;
 		}
-		isOverlap = this.properties[6]==0?false:true;
-		isTest = this.properties[7]==0?false:true;
-		email = "cranberrygame@yahoo.com";
-		licenseKey = "5b4b290b7b56336df0c9837521822164";
+		else if (this.runtime.isWindowsPhone8 || this.runtime.isWindowsPhone81)
+		{
+			this.bannerId = this.wp8BannerId;
+			this.interstitialId = this.wp8InterstitialId;
+		}
+		else
+		{
+			this.bannerId = "";
+			this.interstitialId = "";
+		}
+		this.isShowingBannerAd = false;
+		this.isShowingInterstitial = false;
+		this.AdMob["setUp"](this.bannerId, this.interstitialId, overlap, isTesting);
 		var self = this;
-		if (typeof window["admob"] != 'undefined') {
-			setUpPlugin();
+		this.AdMob["onFullScreenAdLoaded"] = function ()
+		{
+			self.runtime.trigger(cr.plugins_.admob.prototype.cnds.OnInterstitialReceived, self);
+		};
+		this.AdMob["onInterstitialAdLoaded"] = function ()
+		{
+			self.runtime.trigger(cr.plugins_.admob.prototype.cnds.OnInterstitialReceived, self);
+		};
+		this.AdMob["onFullScreenAdShown"] = function ()
+		{
+			self.isShowingInterstitial = true;
+			self.runtime.trigger(cr.plugins_.admob.prototype.cnds.OnInterstitialPresented, self);
+		};
+		this.AdMob["onInterstitialAdShown"] = function ()
+		{
+			self.isShowingInterstitial = true;
+			self.runtime.trigger(cr.plugins_.admob.prototype.cnds.OnInterstitialPresented, self);
+		};
+		this.AdMob["onFullScreenAdClosed"] = function ()
+		{
+			self.isShowingInterstitial = false;
+			self.runtime.trigger(cr.plugins_.admob.prototype.cnds.OnInterstitialDismissed, self);
+		};
+		this.AdMob["onInterstitialAdHidden"] = function ()
+		{
+			self.isShowingInterstitial = false;
+			self.runtime.trigger(cr.plugins_.admob.prototype.cnds.OnInterstitialDismissed, self);
+		};
+		this.AdMob["onBannerAdPreloaded"] = function ()
+		{
+			self.runtime.trigger(cr.plugins_.admob.prototype.cnds.OnBannerAdReceived, self);
+		};
+	};
+	function indexToAdSize(i)
+	{
+		switch (i) {
+		case 0:		return "SMART_BANNER";
+		case 1:		return "BANNER";
+		case 2:		return "MEDIUM_RECTANGLE";
+		case 3:		return "FULL_BANNER";
+		case 4:		return "LEADERBOARD";
+		case 5:		return "SKYSCRAPER";
 		}
-		else {
-			setTimeout(setUpPlugin,600);
+		return "SMART_BANNER";
+	};
+	function indexToAdPosition(i)
+	{
+		switch (i) {
+		case 0:		return "top-left";
+		case 1:		return "top-center";
+		case 2:		return "top-right";
+		case 3:		return "left";
+		case 4:		return "center";
+		case 5:		return "right";
+		case 6:		return "bottom-left";
+		case 7:		return "bottom-center";
+		case 8:		return "bottom-right";
 		}
-		function setUpPlugin() {
-			window["admob"]["setLicenseKey"](email, licenseKey);
-			window["admob"]["setUp"](bannerAdUnit, interstitialAdUnit, isOverlap, isTest);
-			window["admob"]['onBannerAdPreloaded'] = function() {
-				self.runtime.trigger(cr.plugins_.cranberrygame_CordovaAdmob.prototype.cnds.OnBannerAdPreloaded, self);
-			};
-			window["admob"]['onBannerAdLoaded'] = function() {
-				self.runtime.trigger(cr.plugins_.cranberrygame_CordovaAdmob.prototype.cnds.OnBannerAdLoaded, self);
-			};
-			window["admob"]['onBannerAdShown'] = function() {
-				self.runtime.trigger(cr.plugins_.cranberrygame_CordovaAdmob.prototype.cnds.OnBannerAdShown, self);
-			};
-			window["admob"]['onBannerAdHidden'] = function() {
-				self.runtime.trigger(cr.plugins_.cranberrygame_CordovaAdmob.prototype.cnds.OnBannerAdHidden, self);
-			};
-			window["admob"]['onInterstitialAdPreloaded'] = function() {
-				self.runtime.trigger(cr.plugins_.cranberrygame_CordovaAdmob.prototype.cnds.OnInterstitialAdPreloaded, self);
-			};
-			window["admob"]['onInterstitialAdLoaded'] = function() {
-				self.runtime.trigger(cr.plugins_.cranberrygame_CordovaAdmob.prototype.cnds.OnInterstitialAdLoaded, self);
-			};
-			window["admob"]['onInterstitialAdShown'] = function() {
-				self.runtime.trigger(cr.plugins_.cranberrygame_CordovaAdmob.prototype.cnds.OnInterstitialAdShown, self);
-			};
-			window["admob"]['onInterstitialAdHidden'] = function() {
-				self.runtime.trigger(cr.plugins_.cranberrygame_CordovaAdmob.prototype.cnds.OnInterstitialAdHidden, self);
-			};
-		}
+		return "bottom-center";
 	};
-	instanceProto.draw = function(ctx)
-	{
-	};
-	instanceProto.drawGL = function (glw)
-	{
-	};
-/*
-	instanceProto.at = function (x)
-	{
-		return this.arr[x];
-	};
-	instanceProto.set = function (x, val)
-	{
-		this.arr[x] = val;
-	};
-*/
 	function Cnds() {};
-/*
-	Cnds.prototype.MyCondition = function (myparam)
+	Cnds.prototype.IsShowingBanner = function()
 	{
-		return myparam >= 0;
+		return this.isShowingBannerAd;
 	};
-	Cnds.prototype.TriggerCondition = function ()
+	Cnds.prototype.IsShowingInterstitial = function()
+	{
+		return this.isShowingInterstitial;
+	};
+	Cnds.prototype.OnInterstitialReceived = function()
 	{
 		return true;
 	};
-*/
-	Cnds.prototype.OnBannerAdPreloaded = function ()
+	Cnds.prototype.OnInterstitialPresented = function()
 	{
 		return true;
 	};
-	Cnds.prototype.OnBannerAdLoaded = function ()
+	Cnds.prototype.OnInterstitialDismissed = function()
 	{
 		return true;
 	};
-	Cnds.prototype.OnBannerAdShown = function ()
+	Cnds.prototype.OnBannerAdReceived = function()
 	{
 		return true;
-	};
-	Cnds.prototype.OnBannerAdHidden = function ()
-	{
-		return true;
-	};
-	Cnds.prototype.OnInterstitialAdPreloaded = function ()
-	{
-		return true;
-	};
-	Cnds.prototype.OnInterstitialAdLoaded = function ()
-	{
-		return true;
-	};
-	Cnds.prototype.OnInterstitialAdShown = function ()
-	{
-		return true;
-	};
-	Cnds.prototype.OnInterstitialAdHidden = function ()
-	{
-		return true;
-	};
-	Cnds.prototype.IsShowingBannerAd = function ()
-	{
-	    if (typeof window["admob"] == 'undefined')
-			return false;
-		return window["admob"]["isShowingBannerAd"]();
-	};
-	Cnds.prototype.IsShowingInterstitialAd = function ()
-	{
-	    if (typeof window["admob"] == 'undefined')
-			return false;
-		return window["admob"]["isShowingInterstitialAd"]();
-	};
-	Cnds.prototype.LoadedBannerAd = function ()
-	{
-	    if (typeof window["admob"] == 'undefined')
-			return false;
-		return window["admob"]["loadedBannerAd"]();
-	};
-	Cnds.prototype.LoadedInterstitialAd = function ()
-	{
-	    if (typeof window["admob"] == 'undefined')
-			return false;
-		return window["admob"]["loadedInterstitialAd"]();
 	};
 	pluginProto.cnds = new Cnds();
 	function Acts() {};
-/*
-	Acts.prototype.MyAction = function (myparam)
+	Acts.prototype.ShowBanner = function (pos_, size_)
 	{
-		alert(myparam);
+		if (!isSupported)
+			return;
+		this.AdMob["showBannerAd"](indexToAdPosition(pos_), indexToAdSize(size_));
+		this.isShowingBannerAd = true;
 	};
-	Acts.prototype.TriggerAction = function ()
+	Acts.prototype.AutoShowInterstitial = function ()
 	{
-		var self=this;
-		self.runtime.trigger(cr.plugins_.cranberrygame_CordovaAdmob.prototype.cnds.TriggerCondition, self);
+		if (!isSupported)
+			return;
+		if (this.AdMob["showInterstitialAd"])
+			this.AdMob["showInterstitialAd"]();
+		else if (this.AdMob["showFullScreenAd"])
+			this.AdMob["showFullScreenAd"]();
 	};
-*/
-	Acts.prototype.PreloadBannerAd = function ()
+	Acts.prototype.PreloadInterstitial = function ()
 	{
-		if (!(this.runtime.isAndroid || this.runtime.isiOS || this.runtime.isWindowsPhone8 || this.runtime.isWindowsPhone81))
+		if (!isSupported)
 			return;
-        if (typeof window["admob"] == 'undefined')
-            return;
-		window["admob"]["preloadBannerAd"]();
-	}
-	Acts.prototype.ShowBannerAd = function (position, size)
-	{
-		if (!(this.runtime.isAndroid || this.runtime.isiOS || this.runtime.isWindowsPhone8 || this.runtime.isWindowsPhone81))
-			return;
-        if (typeof window["admob"] == 'undefined')
-            return;
-		var positionStr = "top-center";
-		if (position==0)
-			positionStr = "top-left";
-		else if (position==1)
-			positionStr = "top-center";
-		else if (position==2)
-			positionStr = "top-right";
-		else if (position==3)
-			positionStr = "left";
-		else if (position==4)
-			positionStr = "center";
-		else if (position==5)
-			positionStr = "right";
-		else if (position==6)
-			positionStr = "bottom-left";
-		else if (position==7)
-			positionStr = "bottom-center";
-		else if (position==8)
-			positionStr = "bottom-right";
-		var sizeStr = "BANNER";
-		if (size==0)
-			sizeStr = "BANNER";
-		else if (size==1)
-			sizeStr = "LARGE_BANNER";
-		else if (size==2)
-			sizeStr = "MEDIUM_RECTANGLE";
-		else if (size==3)
-			sizeStr = "FULL_BANNER";
-		else if (size==4)
-			sizeStr = "LEADERBOARD";
-		else if (size==5)
-			sizeStr = "SKYSCRAPER";
-		else if (size==6)
-			sizeStr = "SMART_BANNER";
-		window["admob"]["showBannerAd"](positionStr, sizeStr);
+		if (this.AdMob["preloadInterstitialAd"])
+			this.AdMob["preloadInterstitialAd"]();
+		else if (this.AdMob["preloadFullScreenAd"])
+			this.AdMob["preloadFullScreenAd"]();
 	};
-	Acts.prototype.ReloadBannerAd = function ()
+	Acts.prototype.ShowInterstitial = function ()
 	{
-		if (!(this.runtime.isAndroid || this.runtime.isiOS || this.runtime.isWindowsPhone8 || this.runtime.isWindowsPhone81))
+		if (!isSupported)
 			return;
-        if (typeof window["admob"] == 'undefined')
-            return;
-		window["admob"]["reloadBannerAd"]();
-	}
-	Acts.prototype.HideBannerAd = function ()
-	{
-		if (!(this.runtime.isAndroid || this.runtime.isiOS || this.runtime.isWindowsPhone8 || this.runtime.isWindowsPhone81))
-			return;
-        if (typeof window["admob"] == 'undefined')
-            return;
-		window["admob"]["hideBannerAd"]();
+		if (this.AdMob["showInterstitialAd"])
+			this.AdMob["showInterstitialAd"]();
+		else if (this.AdMob["showFullScreenAd"])
+			this.AdMob["showFullScreenAd"]();
 	};
-	Acts.prototype.PreloadInterstitialAd = function ()
+	Acts.prototype.HideBanner = function ()
 	{
-		if (!(this.runtime.isAndroid || this.runtime.isiOS || this.runtime.isWindowsPhone8 || this.runtime.isWindowsPhone81))
+		if (!isSupported)
 			return;
-        if (typeof window["admob"] == 'undefined')
-            return;
-		window["admob"]["preloadInterstitialAd"]();
-	}
-	Acts.prototype.ShowInterstitialAd = function ()
+		this.AdMob["hideBannerAd"]();
+		this.isShowingBannerAd = false;
+	};
+	Acts.prototype.ReloadInterstitial = function ()
 	{
-		if (!(this.runtime.isAndroid || this.runtime.isiOS || this.runtime.isWindowsPhone8 || this.runtime.isWindowsPhone81))
+		if (!isSupported)
 			return;
-        if (typeof window["admob"] == 'undefined')
-            return;
-		window["admob"]["showInterstitialAd"]();
+		if (this.AdMob["reloadInterstitialAd"])
+			this.AdMob["reloadInterstitialAd"]();
+		else if (this.AdMob["reloadFullScreenAd"])
+			this.AdMob["reloadFullScreenAd"]();
+	};
+	Acts.prototype.ReloadBanner = function ()
+	{
+		if (!isSupported)
+			return;
+		this.AdMob["reloadBannerAd"]();
+	};
+	Acts.prototype.PreloadBanner = function ()
+	{
+		if (!isSupported)
+			return;
+		this.AdMob["preloadBannerAd"]();
 	};
 	pluginProto.acts = new Acts();
 	function Exps() {};
-/*
-	Exps.prototype.MyExpression = function (ret)	// 'ret' must always be the first parameter - always return the expression's result through it!
-	{
-		ret.set_int(1337);				// return our value
-	};
-	Exps.prototype.Text = function (ret, param) //cranberrygame
-	{
-		ret.set_string("Hello");		// for ef_return_string
-	};
-*/
 	pluginProto.exps = new Exps();
 }());
 ;
@@ -24657,16 +24544,16 @@ cr.behaviors.Sin = function(runtime)
 	behaviorProto.exps = new Exps();
 }());
 cr.getObjectRefTable = function () { return [
-	cr.plugins_.Arr,
 	cr.plugins_.Audio,
+	cr.plugins_.Arr,
+	cr.plugins_.admob,
 	cr.plugins_.Browser,
-	cr.plugins_.cranberrygame_CordovaAdmob,
 	cr.plugins_.Function,
+	cr.plugins_.WebStorage,
 	cr.plugins_.Sprite,
-	cr.plugins_.TiledBg,
 	cr.plugins_.SpriteFontPlus,
 	cr.plugins_.Touch,
-	cr.plugins_.WebStorage,
+	cr.plugins_.TiledBg,
 	cr.behaviors.Pin,
 	cr.behaviors.Sin,
 	cr.behaviors.Fade,
@@ -24684,7 +24571,6 @@ cr.getObjectRefTable = function () { return [
 	cr.system_object.prototype.acts.Wait,
 	cr.system_object.prototype.acts.GoToLayout,
 	cr.plugins_.Browser.prototype.acts.GoToURLWindow,
-	cr.plugins_.Browser.prototype.acts.GoToURL,
 	cr.system_object.prototype.cnds.OnLayoutStart,
 	cr.plugins_.TiledBg.prototype.acts.SetSize,
 	cr.plugins_.Browser.prototype.exps.ScreenWidth,
@@ -24704,7 +24590,7 @@ cr.getObjectRefTable = function () { return [
 	cr.system_object.prototype.acts.RestartLayout,
 	cr.plugins_.Audio.prototype.cnds.IsTagPlaying,
 	cr.plugins_.Audio.prototype.acts.Stop,
-	cr.plugins_.cranberrygame_CordovaAdmob.prototype.acts.ShowBannerAd,
+	cr.plugins_.admob.prototype.acts.ShowBanner,
 	cr.plugins_.TiledBg.prototype.acts.MoveToTop,
 	cr.plugins_.TiledBg.prototype.acts.SetPos,
 	cr.plugins_.Arr.prototype.cnds.CompareX,
@@ -24738,7 +24624,6 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.TiledBg.prototype.acts.SetOpacity,
 	cr.plugins_.Function.prototype.cnds.OnFunction,
 	cr.plugins_.Sprite.prototype.acts.StopAnim,
-	cr.plugins_.cranberrygame_CordovaAdmob.prototype.acts.ShowInterstitialAd,
 	cr.plugins_.SpriteFontPlus.prototype.acts.SetY,
 	cr.plugins_.Sprite.prototype.acts.SetSize,
 	cr.plugins_.Sprite.prototype.exps.Width,
